@@ -1,10 +1,7 @@
-import { FakeNewsItem } from "../types/general";
 
 const API_BASE_URL = "http://localhost:3000";
 
-export const fetchFakeNews = async (
-  category: string
-): Promise<FakeNewsItem[]> => {
+export const fetchFakeNews = async (category: string) => {
   try {
     const response = await fetch(`${API_BASE_URL}/fake-news`, {
       method: "POST",
@@ -18,8 +15,11 @@ export const fetchFakeNews = async (
       throw new Error("Failed to fetch fake news");
     }
 
-    const data = await response.json();
-    return data;
+    if (!response.body) {
+      throw new Error("Response body is null");
+    }
+
+    return response.body;
   } catch (error) {
     console.error("Error fetching fake news:", error);
     throw error;

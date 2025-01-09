@@ -27,7 +27,7 @@ class FakeNewsStore {
     this.currentCategory = currentCategory;
   }
 
-  private incrementStep() {
+  public incrementStep() {
     this.step += 1;
   }
 
@@ -38,17 +38,27 @@ class FakeNewsStore {
 
     try {
       this.setCurrentCategory(category);
-      const response = await fetchFakeNews(category);
+      const result = await fetchFakeNews(category);
+      const reader = result.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let jsonString = "";
 
-      for (const article of response) {
-        this.fakeNews.push(article);
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        jsonString += decoder.decode(value, { stream: true });
+        while (true) {
+          const index = jsonString.indexOf("\n");
+          if (index === -1) break;
 
-        await new Promise((resolve) => {
-          setTimeout(() => {
-            this.incrementStep();
-            resolve(null);
-          }, 200);
-        });
+          const rawJson = jsonString.slice(0, index);
+          jsonString = jsonString.slice(index + 1);
+
+          const article: FakeNewsItem = JSON.parse(rawJson);
+          this.incrementStep();
+          this.fakeNews.push(article);
+        }
       }
     } catch (error: any) {
       this.setError(error.message);

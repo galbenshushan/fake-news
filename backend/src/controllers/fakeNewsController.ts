@@ -11,13 +11,14 @@ export const getFakeNews = async (req: Request, res: Response) => {
 
   try {
     const articles = await fetchNewsArticles(category);
-    const fakeNews: FakeNews[] = [];
+    res.setHeader("Content-Type", "application/json");
+    res.flushHeaders();
 
     for (const article of articles) {
       const fakeTitle = await generateFakeTitle(article.title);
       const articleCategory = await getArticleCategory(article.description);
 
-      fakeNews.push({
+      const fakeNewsItem: FakeNews = {
         realTitle: article.title,
         fakeTitle,
         source: article.source.name,
@@ -26,10 +27,11 @@ export const getFakeNews = async (req: Request, res: Response) => {
         category: articleCategory,
         urlToImage: article.urlToImage,
         description: article.description,
-      });
+      };
+      res.write(JSON.stringify(fakeNewsItem) + "\n");
     }
 
-    res.json(fakeNews);
+    res.end();
   } catch (error: any) {
     console.error(error);
     res
