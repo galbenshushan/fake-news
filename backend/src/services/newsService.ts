@@ -1,6 +1,7 @@
 import { Article } from "../types/general";
 import dotenv from "dotenv";
 import { getOneWeekBeforeFormattedDate } from "../utils/Date";
+import { totalNews } from "../consts/news";
 
 dotenv.config();
 
@@ -30,7 +31,7 @@ export const fetchNewsArticles = async (
 
     const filteredArticles = data.articles
       .filter((article: Article) => !!article.urlToImage)
-      .slice(0, 14);
+      .slice(0, totalNews);
 
     return filteredArticles;
   } catch (error) {

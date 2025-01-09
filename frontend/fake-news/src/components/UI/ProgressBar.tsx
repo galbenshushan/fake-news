@@ -12,7 +12,7 @@ const ProgressContainer = styled.div`
 
 const StyledLinearProgress = styled(LinearProgress)`
   && {
-    height: 10px;
+    height: 15px;
     background-color: #ddd;
     & .MuiLinearProgress-bar {
       background-color: rgb(239, 12, 12);
@@ -25,23 +25,29 @@ const ProgressBar = () => {
 
   useEffect(() => {
     const updateProgress = () => {
-      const totalArticles = fakeNewsStore.fakeNews.length;
+      const totalArticles = fakeNewsStore.totalNews;
+      const processedArticles = fakeNewsStore.fakeNews.length;
+
       if (totalArticles > 0) {
-        setProgress(Math.floor((fakeNewsStore.step / totalArticles) * 100));
+        const progressPercentage = (processedArticles / totalArticles) * 100;
+        setProgress(progressPercentage);
       }
     };
+
     const interval = setInterval(updateProgress, 200);
 
     return () => {
       clearInterval(interval);
     };
-  }, [fakeNewsStore.fakeNews.length, fakeNewsStore.step]);
+  }, [fakeNewsStore.fakeNews.length, fakeNewsStore.totalNews]);
+
+  if (progress >= 100) {
+    return null;
+  }
 
   return (
     <ProgressContainer>
-      {progress < 100 && (
-        <StyledLinearProgress variant="determinate" value={progress} />
-      )}
+      <StyledLinearProgress variant="determinate" value={progress} />
     </ProgressContainer>
   );
 };

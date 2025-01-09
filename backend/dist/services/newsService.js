@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchNewsArticles = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const Date_1 = require("../utils/Date");
+const news_1 = require("../consts/news");
 dotenv_1.default.config();
 const fetchNewsArticles = (category) => __awaiter(void 0, void 0, void 0, function* () {
     const formattedYesterday = (0, Date_1.getOneWeekBeforeFormattedDate)();
@@ -35,7 +36,7 @@ const fetchNewsArticles = (category) => __awaiter(void 0, void 0, void 0, functi
         const data = yield response.json();
         const filteredArticles = data.articles
             .filter((article) => !!article.urlToImage)
-            .slice(0, 14);
+            .slice(0, news_1.totalNews);
         return filteredArticles;
     }
     catch (error) {

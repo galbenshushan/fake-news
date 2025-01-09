@@ -20,6 +20,7 @@ const NavbarContainer = styled.div`
 const LogoContainer = styled.div`
   display: flex;
   align-items: center;
+  cursor: pointer;
 `;
 
 const CategoriesContainer = styled.div`
@@ -46,16 +47,19 @@ const Navbar: React.FC = () => {
         <Toolbar>
           <NavbarContainer>
             <LogoContainer>
-              <Typography variant="h6" fontWeight={800} color="white">
+              <Typography
+                variant="h6"
+                fontWeight={800}
+                color="white"
+                onClick={() => fakeNewsStore.getFakeNews(Categories.General)}
+              >
                 FNN
               </Typography>
             </LogoContainer>
             <CategoriesContainer>
               {Object.values(Categories).map((category) => (
                 <Category
-                  onClick={() =>
-                    fakeNewsStore.getFakeNews(category.toLowerCase())
-                  }
+                  onClick={() => fakeNewsStore.getFakeNews(category)}
                   key={category}
                 >
                   {category}

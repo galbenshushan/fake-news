@@ -13,7 +13,7 @@ exports.getArticleCategory = exports.generateFakeTitle = void 0;
 const OpenAi_1 = require("../utils/OpenAi");
 const generateFakeTitle = (realTitle) => __awaiter(void 0, void 0, void 0, function* () {
     const systemContent = "You are an AI that generates fake news titles based on real ones. The fake titles should be absurd, bizarre, and exaggerated but still related to the original topic in English only.";
-    const userContent = `Generate a bizarre, exaggerated fake news title based on the following real title: "${realTitle}" in English only that won't be bigger than 50 characters`;
+    const userContent = `Generate a bizarre, exaggerated fake news title based on the following real title: "${realTitle}" in English only that won't be bigger than 40 characters`;
     return yield (0, OpenAi_1.callGPT)(systemContent, userContent);
 });
 exports.generateFakeTitle = generateFakeTitle;

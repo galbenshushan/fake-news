@@ -26,7 +26,7 @@ const ArticlesLayout = observer(() => {
     <>
       <TopSection>
         {fakeNewsStore.fakeNews.slice(0, 2).map((article) => (
-          <ArticleCard isBig article={article} key={article.realTitle} />
+          <ArticleCard article={article} key={article.realTitle} />
         ))}
       </TopSection>
       <Banner text="Breaking News" />

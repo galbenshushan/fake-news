@@ -2,16 +2,15 @@ import React from "react";
 import "./App.css";
 import Main from "./pages/Main";
 import Navbar from "./components/Navbar/Navbar";
-import fakeNewsStore from "./stores/FakeNewsStore";
 import { observer } from "mobx-react-lite";
-import Loader from "./components/UI/Loader";
+import ErrorPopup from "./components/UI/ErrorPopup";
 
 const App = observer(() => {
   return (
     <div>
-      {fakeNewsStore.isLoading && <Loader />}
       <Navbar />
       <Main />
+      <ErrorPopup />
     </div>
   );
 });

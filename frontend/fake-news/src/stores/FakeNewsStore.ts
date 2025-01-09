@@ -1,39 +1,43 @@
 import { makeAutoObservable } from "mobx";
-import { fetchFakeNews } from "../services/FakeNewsService";
+import { fetchFakeNews, getTotalNews } from "../services/FakeNewsService";
 import { FakeNewsItem } from "../types/general";
 import { Categories } from "../enums/general";
 
 class FakeNewsStore {
   fakeNews: FakeNewsItem[] = [];
-  isLoading: boolean = false;
-  error: string | null = null;
-  step: number = 0;
-  currentCategory: string = Categories.General;
+  error: string | null = 'dddd';
+  totalNews: number = 0;
+  currentCategory: string = "";
 
   constructor() {
     makeAutoObservable(this);
     this.getFakeNews(Categories.General);
-  }
-
-  setIsLoading(isLoading: boolean) {
-    this.isLoading = isLoading;
+    this.getTotal();
   }
 
   setError(error: string | null) {
     this.error = error;
   }
 
+  setTotalNews(totalNews: number) {
+    this.totalNews = totalNews;
+  }
+
   setCurrentCategory(currentCategory: string) {
     this.currentCategory = currentCategory;
   }
 
-  public incrementStep() {
-    this.step += 1;
-  }
+  private getTotal = async () => {
+    const result = await getTotalNews();
+    const total = await result.json();
+    this.setTotalNews(total);
+  };
 
   public getFakeNews = async (category: string) => {
+    if (category.toLowerCase() === this.currentCategory.toLowerCase()) {
+      return;
+    }
     this.clearFakeNews();
-    this.setIsLoading(true);
     this.setError(null);
 
     try {
@@ -48,28 +52,28 @@ class FakeNewsStore {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
         jsonString += decoder.decode(value, { stream: true });
-        while (true) {
-          const index = jsonString.indexOf("\n");
-          if (index === -1) break;
 
-          const rawJson = jsonString.slice(0, index);
-          jsonString = jsonString.slice(index + 1);
-
-          const article: FakeNewsItem = JSON.parse(rawJson);
-          this.incrementStep();
-          this.fakeNews.push(article);
-        }
+        this.processArticlesStream(jsonString);
+        jsonString = jsonString.slice(jsonString.indexOf("\n") + 1);
       }
     } catch (error: any) {
       this.setError(error.message);
-    } finally {
-      this.setIsLoading(false);
+    }
+  };
+
+  private processArticlesStream = (jsonString: string) => {
+    let index;
+    while ((index = jsonString.indexOf("\n")) !== -1) {
+      const rawJson = jsonString.slice(0, index);
+      jsonString = jsonString.slice(index + 1);
+
+      const article: FakeNewsItem = JSON.parse(rawJson);
+      this.fakeNews.push(article);
     }
   };
 
   clearFakeNews() {
     this.fakeNews = [];
-    this.step = 0;
   }
 }
 

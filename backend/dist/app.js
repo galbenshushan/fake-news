@@ -12,6 +12,7 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({ origin: "http://localhost:3001" }));
+app.get("/total-fake-news", fakeNewsController_1.getTotalNews);
 app.post("/fake-news", fakeNewsController_1.getFakeNews);
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

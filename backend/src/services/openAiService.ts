@@ -3,7 +3,7 @@ import { callGPT } from "../utils/OpenAi";
 export const generateFakeTitle = async (realTitle: string): Promise<string> => {
   const systemContent =
     "You are an AI that generates fake news titles based on real ones. The fake titles should be absurd, bizarre, and exaggerated but still related to the original topic in English only.";
-  const userContent = `Generate a bizarre, exaggerated fake news title based on the following real title: "${realTitle}" in English only that won't be bigger than 50 characters`;
+  const userContent = `Generate a bizarre, exaggerated fake news title based on the following real title: "${realTitle}" in English only that won't be bigger than 40 characters`;
 
   return await callGPT(systemContent, userContent);
 };

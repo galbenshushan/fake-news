@@ -5,6 +5,7 @@ import {
   getArticleCategory,
 } from "../services/openAiService";
 import { FakeNews } from "../types/general";
+import { totalNews } from "../consts/news";
 
 export const getFakeNews = async (req: Request, res: Response) => {
   const category = req.body.category || "";
@@ -38,4 +39,8 @@ export const getFakeNews = async (req: Request, res: Response) => {
       .status(500)
       .json({ error: "Error generating fake news: " + error.message });
   }
+};
+
+export const getTotalNews = async (req: Request, res: Response) => {
+  res.json(totalNews)
 };

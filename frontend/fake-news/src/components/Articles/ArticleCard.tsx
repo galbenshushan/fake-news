@@ -29,7 +29,7 @@ const CardImage = styled.img`
 `;
 
 const CardTitle = styled.h4`
-  font-size: 1.2rem;
+  font-size: 16px;
   margin-bottom: 10px;
   padding: 0;
   margin: 0;

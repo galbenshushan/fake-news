@@ -9,18 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFakeNews = void 0;
+exports.getTotalNews = exports.getFakeNews = void 0;
 const newsService_1 = require("../services/newsService");
 const openAiService_1 = require("../services/openAiService");
+const news_1 = require("../consts/news");
 const getFakeNews = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const category = req.body.category || "";
     try {
         const articles = yield (0, newsService_1.fetchNewsArticles)(category);
-        const fakeNews = [];
+        res.setHeader("Content-Type", "application/json");
+        res.flushHeaders();
         for (const article of articles) {
             const fakeTitle = yield (0, openAiService_1.generateFakeTitle)(article.title);
             const articleCategory = yield (0, openAiService_1.getArticleCategory)(article.description);
-            fakeNews.push({
+            const fakeNewsItem = {
                 realTitle: article.title,
                 fakeTitle,
                 source: article.source.name,
@@ -29,9 +31,10 @@ const getFakeNews = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 category: articleCategory,
                 urlToImage: article.urlToImage,
                 description: article.description,
-            });
+            };
+            res.write(JSON.stringify(fakeNewsItem) + "\n");
         }
-        res.json(fakeNews);
+        res.end();
     }
     catch (error) {
         console.error(error);
@@ -41,3 +44,7 @@ const getFakeNews = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getFakeNews = getFakeNews;
+const getTotalNews = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.json(news_1.totalNews);
+});
+exports.getTotalNews = getTotalNews;
