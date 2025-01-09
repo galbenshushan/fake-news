@@ -13,20 +13,22 @@ exports.getFakeNews = void 0;
 const newsService_1 = require("../services/newsService");
 const openAiService_1 = require("../services/openAiService");
 const getFakeNews = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const category = req.query.category;
+    const category = req.body.category || "";
     try {
         const articles = yield (0, newsService_1.fetchNewsArticles)(category);
         const fakeNews = [];
         for (const article of articles) {
             const fakeTitle = yield (0, openAiService_1.generateFakeTitle)(article.title);
+            const articleCategory = yield (0, openAiService_1.getArticleCategory)(article.description);
             fakeNews.push({
                 realTitle: article.title,
                 fakeTitle,
                 source: article.source.name,
                 url: article.url,
                 date: article.publishedAt,
-                category: "general",
+                category: articleCategory,
                 urlToImage: article.urlToImage,
+                description: article.description,
             });
         }
         res.json(fakeNews);

@@ -6,9 +6,11 @@ export interface FakeNews {
   date: string;
   category: string;
   urlToImage: string;
+  description:string;
 }
 
 export interface Article {
+  description:string;
   urlToImage: string;
   title: string;
   url: string;

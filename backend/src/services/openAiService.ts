@@ -1,34 +1,19 @@
-import OpenAI from "openai";
-import dotenv from "dotenv";
-dotenv.config();
-
-const openai = new OpenAI({
-  apiKey: process.env.OPEN_AI_KEY,
-});
+import { callGPT } from "../utils/OpenAi";
 
 export const generateFakeTitle = async (realTitle: string): Promise<string> => {
-  try {
-    const response = await openai.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an AI that generates fake news titles based on real ones. The fake titles should be absurd, bizarre, and exaggerated but still related to the original topic in english only",
-        },
-        {
-          role: "user",
-          content: `Generate a bizarre, exaggerated fake news title based on the following real title: "${realTitle}"`,
-        },
-      ],
-      model: "gpt-3.5-turbo",
-      max_tokens: 50,
-    });
+  const systemContent =
+    "You are an AI that generates fake news titles based on real ones. The fake titles should be absurd, bizarre, and exaggerated but still related to the original topic in English only.";
+  const userContent = `Generate a bizarre, exaggerated fake news title based on the following real title: "${realTitle}" in English only that won't be bigger than 50 characters`;
 
-    const fakeTitle =
-      response.choices[0]?.message?.content?.trim() ?? "Default fake title";
-    return fakeTitle;
-  } catch (error) {
-    console.error("Error generating fake title:", error);
-    throw new Error("Error generating fake title");
-  }
+  return await callGPT(systemContent, userContent);
+};
+
+export const getArticleCategory = async (
+  articleDescription: string
+): Promise<string> => {
+  const systemContent =
+    "You are an AI that classifies articles based on their descriptions. The category should be one or two words and related to common topics like Technology, Health, Politics, Entertainment, Sports, etc.";
+  const userContent = `Based on the following article description, classify the article into one of the common categories in English only (e.g., Technology, Health, Politics, Entertainment, Sports, etc.): "${articleDescription}". Please respond with only one or two words for the category.`;
+
+  return await callGPT(systemContent, userContent);
 };

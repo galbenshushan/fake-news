@@ -14,26 +14,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchNewsArticles = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
+const Date_1 = require("../utils/Date");
 dotenv_1.default.config();
 const fetchNewsArticles = (category) => __awaiter(void 0, void 0, void 0, function* () {
+    const formattedYesterday = (0, Date_1.getOneWeekBeforeFormattedDate)();
     const urlParams = new URLSearchParams({
-        q: "Apple",
-        from: "2025-01-07",
+        from: formattedYesterday,
         sortBy: "popularity",
         apiKey: process.env.NEWS_API_KEY || "",
     });
     if (category) {
         urlParams.append("category", category);
-        urlParams.append("country", "us");
     }
-    const url = `https://newsapi.org/v2/${category ? "everything" : "top-headlines"}?${urlParams}`;
+    const url = `https://newsapi.org/v2/top-headlines?${urlParams}`;
     try {
         const response = yield fetch(url);
         if (!response.ok) {
             throw new Error(response.statusText);
         }
         const data = yield response.json();
-        return data.articles.slice(0, 10);
+        const filteredArticles = data.articles
+            .filter((article) => !!article.urlToImage)
+            .slice(0, 14);
+        return filteredArticles;
     }
     catch (error) {
         console.error("Error fetching news articles:", error);

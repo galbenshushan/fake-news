@@ -8,40 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateFakeTitle = void 0;
-const openai_1 = __importDefault(require("openai"));
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-const openai = new openai_1.default({
-    apiKey: process.env.OPEN_AI_KEY,
-});
+exports.getArticleCategory = exports.generateFakeTitle = void 0;
+const OpenAi_1 = require("../utils/OpenAi");
 const generateFakeTitle = (realTitle) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
-    try {
-        const response = yield openai.chat.completions.create({
-            messages: [
-                {
-                    role: "system",
-                    content: "You are an AI that generates fake news titles based on real ones. The fake titles should be absurd, bizarre, and exaggerated but still related to the original topic in english only",
-                },
-                {
-                    role: "user",
-                    content: `Generate a bizarre, exaggerated fake news title based on the following real title: "${realTitle}"`,
-                },
-            ],
-            model: "gpt-3.5-turbo",
-            max_tokens: 50,
-        });
-        const fakeTitle = (_d = (_c = (_b = (_a = response.choices[0]) === null || _a === void 0 ? void 0 : _a.message) === null || _b === void 0 ? void 0 : _b.content) === null || _c === void 0 ? void 0 : _c.trim()) !== null && _d !== void 0 ? _d : "Default fake title";
-        return fakeTitle;
-    }
-    catch (error) {
-        console.error("Error generating fake title:", error);
-        throw new Error("Error generating fake title");
-    }
+    const systemContent = "You are an AI that generates fake news titles based on real ones. The fake titles should be absurd, bizarre, and exaggerated but still related to the original topic in English only.";
+    const userContent = `Generate a bizarre, exaggerated fake news title based on the following real title: "${realTitle}" in English only that won't be bigger than 50 characters`;
+    return yield (0, OpenAi_1.callGPT)(systemContent, userContent);
 });
 exports.generateFakeTitle = generateFakeTitle;
+const getArticleCategory = (articleDescription) => __awaiter(void 0, void 0, void 0, function* () {
+    const systemContent = "You are an AI that classifies articles based on their descriptions. The category should be one or two words and related to common topics like Technology, Health, Politics, Entertainment, Sports, etc.";
+    const userContent = `Based on the following article description, classify the article into one of the common categories in English only (e.g., Technology, Health, Politics, Entertainment, Sports, etc.): "${articleDescription}". Please respond with only one or two words for the category.`;
+    return yield (0, OpenAi_1.callGPT)(systemContent, userContent);
+});
+exports.getArticleCategory = getArticleCategory;

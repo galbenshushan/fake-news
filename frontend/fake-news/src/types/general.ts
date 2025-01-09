@@ -1,4 +1,5 @@
 export interface FakeNewsItem {
+  description: string;
   realTitle: string;
   fakeTitle: string;
   source: string;
