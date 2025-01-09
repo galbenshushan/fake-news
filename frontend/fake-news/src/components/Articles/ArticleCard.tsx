@@ -17,15 +17,15 @@ const CommonCardContainer = styled.div`
   height: 400px;
 `;
 
-const CardImage = styled.img<{ isBig?: boolean }>`
+const CardImage = styled.img`
   width: 100%;
-  max-height: ${(props) => (props.isBig ? "250px" : "200px")};
-  min-height: ${(props) => (props.isBig ? "250px" : "200px")};
+  max-height: 250px;
+  min-height: 250px;
   object-fit: cover;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   object-position: center;
-  margin-bottom: ${(props) => (props.isBig ? "0" : "15px")};
+  margin-bottom: 15px;
 `;
 
 const CardTitle = styled.h4`
@@ -69,16 +69,15 @@ const LinkButton = styled.a`
 
 interface ArticleCardProps {
   article: FakeNewsItem;
-  isBig?: boolean;
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ article, isBig }) => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   return (
     <CommonCardContainer>
       <CardImage
         src={article.urlToImage}
         alt={article.fakeTitle}
-        isBig={isBig}
+        loading="lazy"
       />
       <ArticleCardData>
         <RealTitle title={article.realTitle} />
